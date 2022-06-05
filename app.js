@@ -1,6 +1,6 @@
 document.querySelector('div').style.display = 'none';
 
-const { Engine, Render, Runner, World, Bodies, Body } = Matter;
+const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
 
 const cells = 5;
 const width = 600;
@@ -9,7 +9,6 @@ const unitLength = width / cells;
 
 const engine = Engine.create();
 engine.world.gravity.y = 0;
-engine.world.gravity.x = 0;
 const { world } = engine;
 const render = Render.create({
     element: document.body,
@@ -24,17 +23,17 @@ Render.run(render);
 Runner.run(Runner.create(), engine);
 
 // Walls/Borders
-const walls = [
+const borders = [
     // top
-    Bodies.rectangle(width / 2, 0, width, 2, { isStatic: true, }),
+    Bodies.rectangle(width / 2, 0, width, 2, { label: 'border', isStatic: true, }),
     // right
-    Bodies.rectangle(width, height / 2, 2, height, { isStatic: true }),
+    Bodies.rectangle(width, height / 2, 2, height, { label: 'border', isStatic: true }),
     // bottom
-    Bodies.rectangle(width / 2, height, width, 2, { isStatic: true }),
+    Bodies.rectangle(width / 2, height, width, 2, { label: 'border', isStatic: true }),
     // left
-    Bodies.rectangle(0, height / 2, 2, height, { isStatic: true })
+    Bodies.rectangle(0, height / 2, 2, height, { label: 'border', isStatic: true })
 ];
-World.add(world, walls);
+World.add(world, borders);
 
 // Maze!
 
@@ -124,6 +123,7 @@ horizontals.forEach((row, rowIndex) => {
             unitLength, 
             5, 
             {
+                label: 'horizontalWall',
                 isStatic: true
             }
         )
@@ -144,6 +144,7 @@ verticals.forEach((row, rowIndex) => {
             5, 
             unitLength, 
             {
+                label: 'verticalWall',
                 isStatic: true
             }
         );
@@ -152,13 +153,28 @@ verticals.forEach((row, rowIndex) => {
 })
 
 // Goal
-const goal = Bodies.rectangle(width - unitLength / 2, height - unitLength / 2, unitLength * .7, unitLength * .7, { isStatic: true});
+const goal = Bodies.rectangle(
+    width - unitLength / 2, 
+    height - unitLength / 2, 
+    unitLength * .7, 
+    unitLength * .7, 
+    { 
+        isStatic: true, 
+        label: 'goal'
+    });
 World.add(world, goal);
 
 // Ball
-const ball = Bodies.circle(unitLength / 2, unitLength / 2, unitLength * .3, { isStatic: false });
+const ball = Bodies.circle(
+    unitLength / 2, 
+    unitLength / 2, 
+    unitLength * .3, 
+    { 
+        label: 'ball' 
+    });
 World.add(world, ball);
 
+// make the ball movable
 document.addEventListener('keydown', event => {
     const { x, y} = ball.velocity;
     if (event.key === 'w') {
@@ -174,4 +190,19 @@ document.addEventListener('keydown', event => {
         alert.play();
         alert.loop = false;
     }
+})
+
+// Win condition 
+Events.on(engine, 'collisionStart', event => {
+    event.pairs.forEach((collision) => {
+        const labels = ['ball', 'goal'];
+        if (labels.includes(collision.bodyA.label) && labels.includes(collision.bodyB.label)) {
+            engine.world.gravity.y = 1;
+            engine.world.bodies.forEach((body) => {
+                if (body.label !== 'border') {
+                    Body.setStatic(body, false);
+                }
+            })
+        }
+    })
 })
