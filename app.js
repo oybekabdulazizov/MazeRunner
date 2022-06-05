@@ -1,13 +1,15 @@
 document.querySelector('div').style.display = 'none';
 
-const { Engine, Render, Runner, World, Bodies } = Matter;
+const { Engine, Render, Runner, World, Bodies, Body } = Matter;
 
-const cells = 20;
+const cells = 5;
 const width = 600;
 const height = 600;
 const unitLength = width / cells;
 
 const engine = Engine.create();
+engine.world.gravity.y = 0;
+engine.world.gravity.x = 0;
 const { world } = engine;
 const render = Render.create({
     element: document.body,
@@ -108,6 +110,8 @@ const shuffleArray = (arr) => {
 
 stepRecursive(1, 1);
 
+
+// Horizontal walls
 horizontals.forEach((row, rowIndex) => {
     row.forEach((open, columnIndex) => {
         if (open) {
@@ -127,6 +131,7 @@ horizontals.forEach((row, rowIndex) => {
     });
 });
 
+// Vertical walls
 verticals.forEach((row, rowIndex) => {
     row.forEach((open, columnIndex) => {
         if (open) {
@@ -144,4 +149,29 @@ verticals.forEach((row, rowIndex) => {
         );
         World.add(world, wall);
     })
+})
+
+// Goal
+const goal = Bodies.rectangle(width - unitLength / 2, height - unitLength / 2, unitLength * .7, unitLength * .7, { isStatic: true});
+World.add(world, goal);
+
+// Ball
+const ball = Bodies.circle(unitLength / 2, unitLength / 2, unitLength * .3, { isStatic: false });
+World.add(world, ball);
+
+document.addEventListener('keydown', event => {
+    const { x, y} = ball.velocity;
+    if (event.key === 'w') {
+        Body.setVelocity(ball, { x, y: y - 3 });
+    } else if (event.key === 'd') {
+        Body.setVelocity(ball, { x: x + 3, y });
+    } else if (event.key === 's') {
+        Body.setVelocity(ball, { x, y: y + 3 });
+    } else if (event.key === 'a') {
+        Body.setVelocity(ball, { x: x - 3, y });
+    } else {
+        const alert = new Audio();
+        alert.play();
+        alert.loop = false;
+    }
 })
