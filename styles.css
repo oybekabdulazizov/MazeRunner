@@ -1,0 +1,26 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden
+}
+
+.winner {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    z-index: 2;
+}
+
+.hidden {
+    display: none !important;
+}
+
+h1 {
+    font-size: 5em;
+    letter-spacing: 2px;
+    color: blueviolet;
+    margin: 10px 15px;
+}
