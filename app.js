@@ -1,8 +1,9 @@
 document.querySelector('div').style.display = 'none';
 
-const { Engine, Render, Runner, World, Bodies, MouseConstraint, Mouse } = Matter;
+const { Engine, Render, Runner, World, Bodies } = Matter;
 
-const width = 800;
+const cells = 3;
+const width = 600;
 const height = 600;
 
 const engine = Engine.create();
@@ -11,39 +12,34 @@ const render = Render.create({
     element: document.body,
     engine: engine,
     options: {
-        wireframes: false,
+        wireframes: true,
         width,
         height
     }
 });
-
 Render.run(render);
 Runner.run(Runner.create(), engine);
-World.add(world, MouseConstraint.create(engine, {
-    mouse: Mouse.create(render.canvas)
-}));
 
 // Walls/Borders
 const walls = [
-    Bodies.rectangle(width / 2, 0, width, 20, { isStatic: true }),
+    // top
+    Bodies.rectangle(width / 2, 0, width, 20, { isStatic: true,  }),
+    // right
     Bodies.rectangle(width, height / 2, 20, height, { isStatic: true }),
+    // bottom
     Bodies.rectangle(width / 2, height, width, 20, { isStatic: true }),
+    // left
     Bodies.rectangle(0, height / 2, 20, height, { isStatic: true })
 ];
 World.add(world, walls);
 
-// Random Shapes 
-for (let i = 0; i < 50; i++) {
-    let w = Math.random() * (60 - 30 + 1) + 30;
-    let h = Math.random() * (60 - 30 + 1) + 30;
-    let random = Math.random();
-    if (random >= .5) {
-        World.add(world, Bodies.rectangle(Math.random() * width, Math.random() * height, w, h));
-    } else {
-        World.add(world, Bodies.circle(Math.random() * width, Math.random() * height, (h+w)/2, {
-            render: {
-                fillStyle: 'lightgreen'
-            }
-        }));
-    }
-}
+// Maze!
+
+// Maze grid 3x3
+const grid = Array(cells).fill(null).map(() => Array(cells).fill(false)); 
+const verticals = Array(cells).fill(null).map(() => Array(cells -1).fill(false));
+const horizontals = Array(cells -1).fill(null).map(() => Array(cells).fill(false));
+
+const startRow = Math.floor(Math.random() * cells);
+const startColumn = Math.floor(Math.random() * cells);
+console.log(startRow, startColumn);
