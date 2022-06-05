@@ -2,9 +2,10 @@ document.querySelector('div').style.display = 'none';
 
 const { Engine, Render, Runner, World, Bodies } = Matter;
 
-const cells = 3;
+const cells = 20;
 const width = 600;
 const height = 600;
+const unitLength = width / cells;
 
 const engine = Engine.create();
 const { world } = engine;
@@ -23,13 +24,13 @@ Runner.run(Runner.create(), engine);
 // Walls/Borders
 const walls = [
     // top
-    Bodies.rectangle(width / 2, 0, width, 20, { isStatic: true, }),
+    Bodies.rectangle(width / 2, 0, width, 2, { isStatic: true, }),
     // right
-    Bodies.rectangle(width, height / 2, 20, height, { isStatic: true }),
+    Bodies.rectangle(width, height / 2, 2, height, { isStatic: true }),
     // bottom
-    Bodies.rectangle(width / 2, height, width, 20, { isStatic: true }),
+    Bodies.rectangle(width / 2, height, width, 2, { isStatic: true }),
     // left
-    Bodies.rectangle(0, height / 2, 20, height, { isStatic: true })
+    Bodies.rectangle(0, height / 2, 2, height, { isStatic: true })
 ];
 World.add(world, walls);
 
@@ -106,3 +107,41 @@ const shuffleArray = (arr) => {
 }
 
 stepRecursive(1, 1);
+
+horizontals.forEach((row, rowIndex) => {
+    row.forEach((open, columnIndex) => {
+        if (open) {
+            return;
+        }
+
+        const wall = Bodies.rectangle(
+            columnIndex * unitLength + unitLength / 2,
+            rowIndex * unitLength + unitLength,
+            unitLength, 
+            5, 
+            {
+                isStatic: true
+            }
+        )
+        World.add(world, wall);
+    });
+});
+
+verticals.forEach((row, rowIndex) => {
+    row.forEach((open, columnIndex) => {
+        if (open) {
+            return; 
+        }
+
+        const wall = Bodies.rectangle(
+            columnIndex * unitLength + unitLength, 
+            rowIndex * unitLength + unitLength / 2, 
+            5, 
+            unitLength, 
+            {
+                isStatic: true
+            }
+        );
+        World.add(world, wall);
+    })
+})
