@@ -1,9 +1,9 @@
-document.querySelector('div').style.display = 'none';
+const successMessage = document.querySelector('.winner');
 
 const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
 
-const cellsHorizontal = 10;
-const cellsVertical = 8;
+const cellsHorizontal = 4;
+const cellsVertical = 3;
 const width = window.innerWidth;
 const height = window.innerHeight;
 const unitLengthX = width / cellsHorizontal;
@@ -16,7 +16,7 @@ const render = Render.create({
     element: document.body,
     engine: engine,
     options: {
-        wireframes: true,
+        wireframes: false,
         width,
         height
     }
@@ -126,7 +126,10 @@ horizontals.forEach((row, rowIndex) => {
             5, 
             {
                 label: 'horizontalWall',
-                isStatic: true
+                isStatic: true, 
+                render: {
+                    fillStyle: 'red'
+                }
             }
         )
         World.add(world, wall);
@@ -147,7 +150,10 @@ verticals.forEach((row, rowIndex) => {
             unitLengthY, 
             {
                 label: 'verticalWall',
-                isStatic: true
+                isStatic: true, 
+                render: {
+                    fillStyle: 'red'
+                }
             }
         );
         World.add(world, wall);
@@ -162,7 +168,10 @@ const goal = Bodies.rectangle(
     unitLengthY * .5, 
     { 
         isStatic: true, 
-        label: 'goal'
+        label: 'goal', 
+        render: {
+            fillStyle: 'green'
+        }
     });
 World.add(world, goal);
 
@@ -172,7 +181,10 @@ const ball = Bodies.circle(
     unitLengthY / 2, 
     Math.min(unitLengthX, unitLengthY) / 4, 
     { 
-        label: 'ball' 
+        label: 'ball', 
+        render: {
+            fillStyle: 'orange'
+        }
     });
 World.add(world, ball);
 
@@ -199,6 +211,7 @@ Events.on(engine, 'collisionStart', event => {
     event.pairs.forEach((collision) => {
         const labels = ['ball', 'goal'];
         if (labels.includes(collision.bodyA.label) && labels.includes(collision.bodyB.label)) {
+            successMessage.classList.remove('hidden');
             engine.world.gravity.y = 1;
             engine.world.bodies.forEach((body) => {
                 if (body.label !== 'border') {
