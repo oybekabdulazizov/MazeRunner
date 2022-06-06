@@ -2,8 +2,8 @@ const successMessage = document.querySelector('.winner');
 
 const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
 
-const cellsHorizontal = 4;
-const cellsVertical = 3;
+const cellsHorizontal = 16;
+const cellsVertical = 10;
 const width = window.innerWidth;
 const height = window.innerHeight;
 const unitLengthX = width / cellsHorizontal;
@@ -27,13 +27,13 @@ Runner.run(Runner.create(), engine);
 // Walls/Borders
 const borders = [
     // top
-    Bodies.rectangle(width / 2, 0, width, 2, { label: 'border', isStatic: true, }),
+    Bodies.rectangle(width / 2, -50, width, 110, { label: 'border', isStatic: true, }),
     // right
-    Bodies.rectangle(width, height / 2, 2, height, { label: 'border', isStatic: true }),
+    Bodies.rectangle(width + 50, height / 2, 110, height, { label: 'border', isStatic: true }),
     // bottom
-    Bodies.rectangle(width / 2, height, width, 2, { label: 'border', isStatic: true }),
+    Bodies.rectangle(width / 2, height + 50, width, 110, { label: 'border', isStatic: true }),
     // left
-    Bodies.rectangle(0, height / 2, 2, height, { label: 'border', isStatic: true })
+    Bodies.rectangle(-50, height / 2, 110, height, { label: 'border', isStatic: true })
 ];
 World.add(world, borders);
 
