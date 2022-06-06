@@ -191,13 +191,13 @@ World.add(world, ball);
 // make the ball movable
 document.addEventListener('keydown', event => {
     const { x, y} = ball.velocity;
-    if (event.key === 'w') {
+    if (event.key === 'w' || event.key === 'ArrowUp') {
         Body.setVelocity(ball, { x, y: y - 3 });
-    } else if (event.key === 'd') {
+    } else if (event.key === 'd' || event.key === 'ArrowRight') {
         Body.setVelocity(ball, { x: x + 3, y });
-    } else if (event.key === 's') {
+    } else if (event.key === 's' || event.key === 'ArrowDown') {
         Body.setVelocity(ball, { x, y: y + 3 });
-    } else if (event.key === 'a') {
+    } else if (event.key === 'a' || event.key === 'ArrowLeft') {
         Body.setVelocity(ball, { x: x - 3, y });
     } else {
         const alert = new Audio();
